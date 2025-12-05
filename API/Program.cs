@@ -26,7 +26,7 @@ namespace API
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("GODO-FE-WEB", policy =>
+                options.AddPolicy("PersonalJobTracker-FE", policy =>
                 {
                     policy
                         .WithOrigins("http://localhost:3000")
@@ -51,7 +51,7 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseCors("GODO-FE-WEB");
+            app.UseCors("PersonalJobTracker-FE");
 
             app.UseAuthentication();
 
