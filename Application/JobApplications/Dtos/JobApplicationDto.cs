@@ -1,25 +1,25 @@
 ﻿using Domain.Models.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Domain.Models.Entities
+namespace Application.JobApplications.Dtos
 {
-
-    public class JobApplication
+    public class JobApplicationDto
     {
         public Guid Id { get; set; }
 
-        // Foreign key and navigation
         public Guid CompanyId { get; set; }
-        public Company Company { get; set; } = null!;
+        public string CompanyName { get; set; } = null!; // helpful for UI
 
-        // Required
         public string PositionTitle { get; set; } = null!;
 
-        public ApplicationStatus Status { get; set; } = ApplicationStatus.Planned;
+        public ApplicationStatus Status { get; set; }
 
         public DateTime? AppliedDate { get; set; }
-
-        // Always set (we’ll also configure a DB default)
-        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+        public DateTime LastUpdated { get; set; }
 
         public string? ContactEmail { get; set; }
         public string? ContactPhone { get; set; }

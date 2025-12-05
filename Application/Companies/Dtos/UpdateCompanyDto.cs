@@ -1,12 +1,9 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace Domain.Models.Entities
+﻿namespace Application.Companies.Dtos
 {
-    public class Company
+    public class UpdateCompanyDto
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; }   // or pass via route and omit here if you prefer
 
-        // Required
         public string Name { get; set; } = null!;
 
         public string? OrgNumber { get; set; }
@@ -15,8 +12,5 @@ namespace Domain.Models.Entities
         public string? Industry { get; set; }
         public string? WebsiteUrl { get; set; }
         public string? Notes { get; set; }
-
-        // Navigation property
-        public ICollection<JobApplication> Applications { get; set; } = new List<JobApplication>();
     }
 }
