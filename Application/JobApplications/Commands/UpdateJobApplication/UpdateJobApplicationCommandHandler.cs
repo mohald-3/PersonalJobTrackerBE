@@ -42,10 +42,7 @@ namespace Application.JobApplications.Commands.UpdateJobApplication
                     $"JobApplication with id '{dto.Id}' was not found.");
             }
 
-            if (string.IsNullOrWhiteSpace(dto.PositionTitle))
-                return OperationResult<JobApplicationDto>.Failure("PositionTitle is required.");
-
-            // Optional: validate company
+            //// Optional business rule: if CompanyId changes, ensure new company exists
             //if (dto.CompanyId != Guid.Empty && dto.CompanyId != entity.CompanyId)
             //{
             //    var company = await _companyRepository.GetByIdAsync(dto.CompanyId);
@@ -56,8 +53,7 @@ namespace Application.JobApplications.Commands.UpdateJobApplication
             //    }
             //}
 
-            // Map dto onto existing entity
-            _mapper.Map(dto, entity);
+            _mapper.Map(dto, entity); // AutoMapper sets LastUpdated etc.
 
             await _jobApplicationRepository.UpdateAsync(entity);
 

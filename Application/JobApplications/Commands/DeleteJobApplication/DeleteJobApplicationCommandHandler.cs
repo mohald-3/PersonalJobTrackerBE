@@ -5,8 +5,7 @@ using MediatR;
 
 namespace Application.JobApplications.Commands.DeleteJobApplication
 {
-    public class DeleteJobApplicationCommandHandler
-        : IRequestHandler<DeleteJobApplicationCommand, OperationResult<bool>>
+    public class DeleteJobApplicationCommandHandler : IRequestHandler<DeleteJobApplicationCommand, OperationResult<bool>>
     {
         private readonly IGenericRepository<JobApplication> _jobApplicationRepository;
 
