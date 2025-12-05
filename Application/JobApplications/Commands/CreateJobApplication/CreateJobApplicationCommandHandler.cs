@@ -30,13 +30,7 @@ namespace Application.JobApplications.Commands.CreateJobApplication
         {
             var dto = request.Dto;
 
-            if (dto.CompanyId == Guid.Empty)
-                return OperationResult<JobApplicationDto>.Failure("CompanyId is required.");
-
-            if (string.IsNullOrWhiteSpace(dto.PositionTitle))
-                return OperationResult<JobApplicationDto>.Failure("PositionTitle is required.");
-
-            // Optional: validate that the company exists
+            // Business rule: company must exist
             var company = await _companyRepository.GetByIdAsync(dto.CompanyId);
             if (company is null)
             {

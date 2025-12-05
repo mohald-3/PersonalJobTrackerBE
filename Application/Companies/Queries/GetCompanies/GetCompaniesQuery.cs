@@ -9,5 +9,12 @@ using System.Threading.Tasks;
 
 namespace Application.Companies.Queries.GetCompanies
 {
-    public record GetCompaniesQuery() : IRequest<OperationResult<IEnumerable<CompanyDto>>>;
+    public record GetCompaniesQuery(
+        int PageNumber = 1,
+        int PageSize = 10,
+        string? Search = null,
+        string? City = null,
+        string? Country = null,
+        string? Industry = null
+    ) : IRequest<OperationResult<PagedResult<CompanyDto>>>;
 }
