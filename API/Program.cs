@@ -29,7 +29,7 @@ namespace API
                 options.AddPolicy("PersonalJobTracker-FE", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:3000")
+                        .WithOrigins("http://localhost:5173", "https://localhost:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

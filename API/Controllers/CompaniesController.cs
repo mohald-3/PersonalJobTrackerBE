@@ -126,7 +126,7 @@ namespace API.Controllers
                 cancellationToken);
 
             if (result.IsSuccess)
-                return NoContent();
+                return Ok(result);
 
             var errors = result.Errors ?? new List<string>();
             if (errors.Any(e => e.Contains("not found", StringComparison.OrdinalIgnoreCase)))

@@ -12,8 +12,7 @@ namespace Application.JobApplications.Mapping
         {
             // Entity -> DTO
             CreateMap<JobApplication, JobApplicationDto>()
-                .ForMember(dest => dest.CompanyName,
-                    opt => opt.MapFrom(src => src.Company != null ? src.Company.Name : string.Empty));
+                .ForMember(dest => dest.CompanyName, opt => opt.Ignore());
 
             // Create DTO -> Entity
             CreateMap<CreateJobApplicationDto, JobApplication>()

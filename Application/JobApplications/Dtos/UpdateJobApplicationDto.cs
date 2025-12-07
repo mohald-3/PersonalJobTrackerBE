@@ -6,7 +6,7 @@ namespace Application.JobApplications.Dtos
     {
         public Guid Id { get; set; } // or use route param instead
 
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
 
         public string PositionTitle { get; set; } = null!;
 
