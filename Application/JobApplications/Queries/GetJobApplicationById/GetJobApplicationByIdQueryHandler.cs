@@ -11,13 +11,16 @@ namespace Application.JobApplications.Queries.GetJobApplicationById
         : IRequestHandler<GetJobApplicationByIdQuery, OperationResult<JobApplicationDto>>
     {
         private readonly IGenericRepository<JobApplication> _jobApplicationRepository;
+        private readonly IGenericRepository<Company> _companyRepository;
         private readonly IMapper _mapper;
 
         public GetJobApplicationByIdQueryHandler(
             IGenericRepository<JobApplication> jobApplicationRepository,
+            IGenericRepository<Company> companyRepository,
             IMapper mapper)
         {
             _jobApplicationRepository = jobApplicationRepository;
+            _companyRepository = companyRepository;
             _mapper = mapper;
         }
 
@@ -31,8 +34,9 @@ namespace Application.JobApplications.Queries.GetJobApplicationById
                 return OperationResult<JobApplicationDto>.Failure(
                     $"JobApplication with id '{request.Id}' was not found.");
             }
-
             var dto = _mapper.Map<JobApplicationDto>(entity);
+            var company = await _companyRepository.GetByIdAsync(dto.CompanyId);
+            dto.CompanyName = company?.Name ?? string.Empty;
             return OperationResult<JobApplicationDto>.Success(dto);
         }
     }

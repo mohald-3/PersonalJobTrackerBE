@@ -1,8 +1,10 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Bogus;
+﻿using Bogus;
+using Domain.Models.Entities;
+using Domain.Models.Enums;
 using Domain.Models.Users;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Infrastructure.Database.Seeding
 {
@@ -12,23 +14,26 @@ namespace Infrastructure.Database.Seeding
         {
             var faker = new Faker("en");
 
-            // 1  Roles
+            // ---------------------------
+            // 1) Seed Roles
+            // ---------------------------
             if (!await context.Roles.AnyAsync())
             {
                 var roles = new[]
                 {
-            new Role { Name = "Admin" },
-            new Role { Name = "User" },
-            new Role { Name = "CompanyUser" },
-            new Role { Name = "Auditor" },
-            new Role { Name = "Manager" }
-        };
-
+                    new Role { Name = "Admin" },
+                    new Role { Name = "User" },
+                    new Role { Name = "CompanyUser" },
+                    new Role { Name = "Auditor" },
+                    new Role { Name = "Manager" }
+                };
                 await context.Roles.AddRangeAsync(roles);
                 await context.SaveChangesAsync();
             }
 
-            // 2️ Users
+            // ---------------------------
+            // 2) Seed Users
+            // ---------------------------
             if (!await context.Users.AnyAsync())
             {
                 var roles = await context.Roles.ToListAsync();
@@ -64,6 +69,70 @@ namespace Infrastructure.Database.Seeding
                 }
 
                 await context.Users.AddRangeAsync(users);
+                await context.SaveChangesAsync();
+            }
+
+            // ==================================================
+            // 3) Seed Companies
+            // ==================================================
+            if (!await context.Companies.AnyAsync())
+            {
+                var companies = new List<Company>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    companies.Add(new Company
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = faker.Company.CompanyName(),
+                        OrgNumber = faker.Random.Replace("##########"), // random numeric string
+                        City = faker.Address.City(),
+                        Country = faker.Address.Country(),
+                        Industry = faker.Company.CatchPhrase(),
+                        WebsiteUrl = faker.Internet.Url(),
+                        Notes = faker.Lorem.Sentence()
+                    });
+                }
+
+                await context.Companies.AddRangeAsync(companies);
+                await context.SaveChangesAsync();
+            }
+
+
+            // ==================================================
+            // 4) Seed Job Applications
+            // ==================================================
+            if (!await context.Applications.AnyAsync())
+            {
+                var companies = await context.Companies.ToListAsync();
+                var applications = new List<JobApplication>();
+
+                var statuses = Enum.GetValues(typeof(ApplicationStatus))
+                                   .Cast<ApplicationStatus>()
+                                   .ToList();
+
+                for (int i = 0; i < 50; i++)
+                {
+                    var company = faker.PickRandom(companies);
+                    var appliedDate = faker.Date.Past(1); // within last year
+
+                    applications.Add(new JobApplication
+                    {
+                        Id = Guid.NewGuid(),
+                        CompanyId = company.Id,
+                        PositionTitle = faker.Name.JobTitle(),
+                        Status = faker.PickRandom(statuses),
+                        AppliedDate = appliedDate,
+                        LastUpdated = DateTime.UtcNow,
+                        ContactEmail = faker.Internet.Email(),
+                        ContactPhone = faker.Phone.PhoneNumber(),
+                        Source = faker.Company.CompanySuffix(),
+                        Priority = faker.Random.Int(1, 5),
+                        Notes = faker.Lorem.Sentences(2)
+                    });
+                }
+
+                await context.Applications.AddRangeAsync(applications);
                 await context.SaveChangesAsync();
             }
         }

@@ -11,13 +11,16 @@ namespace Application.JobApplications.Queries.GetJobApplications
         : IRequestHandler<GetJobApplicationsQuery, OperationResult<PagedResult<JobApplicationDto>>>
     {
         private readonly IGenericRepository<JobApplication> _jobApplicationRepository;
+        private readonly IGenericRepository<Company> _companyRepository;
         private readonly IMapper _mapper;
 
         public GetJobApplicationsQueryHandler(
             IGenericRepository<JobApplication> jobApplicationRepository,
+            IGenericRepository<Company> companyRepository,
             IMapper mapper)
         {
             _jobApplicationRepository = jobApplicationRepository;
+            _companyRepository = companyRepository;
             _mapper = mapper;
         }
 
@@ -73,6 +76,17 @@ namespace Application.JobApplications.Queries.GetJobApplications
                 .ToList();
 
             var dtoList = _mapper.Map<IEnumerable<JobApplicationDto>>(pagedApplications);
+
+            var companies = await _companyRepository.GetAllAsync();
+            var companyDict = companies.ToDictionary(c => c.Id, c => c.Name);
+
+            foreach (var dto in dtoList)
+            {
+                if (companyDict.TryGetValue(dto.CompanyId, out var companyName))
+                {
+                    dto.CompanyName = companyName;
+                }
+            }
 
             var pagedResult = PagedResult<JobApplicationDto>.Create(dtoList, totalCount, pageNumber, pageSize);
 
